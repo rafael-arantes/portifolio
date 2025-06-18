@@ -3,11 +3,14 @@ import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import CallToAction from "@/partials/CallToAction.astro";
-import Testimonial from "@/partials/Testimonial.astro";
 import type { Button, Feature } from "@/types";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
 import { FaCheck } from "react-icons/fa";
+import BlogCard from "@/components/BlogCard.astro";
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+import config from "@/config/config.json";
 
 interface Homepage {
   banner: {
@@ -21,25 +24,37 @@ interface Homepage {
 
 const homepage = (await getEntry(
   "homepage",
-  "-index"
+  "-index",
 )) as CollectionEntry<"homepage">;
 
 const testimonial = (await getEntry(
   "testimonialSection",
-  "testimonial"
+  "testimonial",
 )) as CollectionEntry<"testimonialSection">;
 
 const call_to_action = (await getEntry(
   "ctaSection",
-  "call-to-action"
+  "call-to-action",
 )) as CollectionEntry<"ctaSection">;
+
+const BLOG_FOLDER = "blog";
+
+const postIndex = (await getEntry(
+  BLOG_FOLDER,
+  "-index"
+)) as CollectionEntry<"blog">;
+const posts = await getSinglePage(BLOG_FOLDER);
+const sortedPosts = sortByDate(posts);
+const totalPages: number = Math.ceil(posts.length / config.settings.pagination);
+const currentPosts = sortedPosts.slice(0, config.settings.pagination);
+const recentStudies = sortedPosts.slice(0, 3);
 
 const { banner, features } = homepage.data as Homepage;
 ---
 
 <Base>
   <!-- Banner -->
-  <section class="section pt-14">
+  <section class="section pt-14 h-screen row px-10 items-center">
     <div class="container">
       <div class="row justify-center">
         <div class="lg:col-7 md:col-9 mb-8 text-center">
@@ -63,7 +78,7 @@ const { banner, features } = homepage.data as Homepage;
             )
           }
         </div>
-        {
+        <!-- {
           banner.image && (
             <div class="col-12">
               <ImageMod
@@ -75,7 +90,7 @@ const { banner, features } = homepage.data as Homepage;
               />
             </div>
           )
-        }
+        } -->
       </div>
     </div>
   </section>
@@ -84,7 +99,7 @@ const { banner, features } = homepage.data as Homepage;
   <!-- Features -->
   {
     features.map((feature, index: number) => (
-      <section class={`section-sm ${index % 2 === 0 && "bg-gradient"}`}>
+      <section class={`section-sm ${index % 2 === 0 && "bg-gradient"} px-10`}>
         <div class="container">
           <div class="row items-center justify-between">
             <div
@@ -122,6 +137,452 @@ const { banner, features } = homepage.data as Homepage;
   }
   <!-- /Features -->
 
-  <Testimonial testimonial={testimonial} />
-  <CallToAction call_to_action={call_to_action} />
+  <!-- Services -->
+  <section class="section pt-14 px-10 row items-center">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+          Meus Serviços de CRO:
+        </h2>
+      </div>
+
+      <div class="mt-16 grid gap-10 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          class="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg"
+        >
+          <div
+            class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-6"
+          >
+            <svg
+              class="h-8 w-8 text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">
+            Implementação de Testes A/B
+          </h3>
+          <p class="text-base text-gray-600 leading-relaxed">
+            Tradução de hipóteses de negócio em testes A/B e multivariados
+            robustos. Garanto um código limpo, que não impacta a performance do
+            seu site e assegura uma coleta de dados 100% precisa.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg"
+        >
+          <div
+            class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-6"
+          >
+            <svg
+              class="h-8 w-8 text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 1 0-4.773-4.773 3.375 3.375 0 0 0 4.774 4.774ZM21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">
+            Auditoria Técnica de CRO
+          </h3>
+          <p class="text-base text-gray-600 leading-relaxed">
+            Análise completa do seu setup de ferramentas (Analytics, GTM,
+            Ferramentas de Teste) para encontrar e corrigir falhas técnicas que
+            podem estar invalidando seus resultados. Confie nos seus dados.
+          </p>
+        </div>
+
+        <div
+          class="flex flex-col items-center text-center p-8 bg-white rounded-2xl shadow-lg"
+        >
+          <div
+            class="flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-6"
+          >
+            <svg
+              class="h-8 w-8 text-indigo-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-2.308M15 19.128v-3.86a2.25 2.25 0 0 1 3.485-2.064l2.25 2.25a2.25 2.25 0 0 1-2.064 3.485Z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 12.75h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 15h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6.75 17.25h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 12.75h.008v.008H9v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 15h.008v.008H9v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 17.25h.008v.008H9v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M11.25 12.75h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M11.25 15h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M11.25 17.25h.008v.008h-.008v-.008Z"></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-2.308M15 19.128v-3.86a2.25 2.25 0 0 1 3.485-2.064l2.25 2.25a2.25 2.25 0 0 1-2.064 3.485Z"
+              ></path>
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4.5 6.375a9.375 9.375 0 0 1 15 0m-15 0a9.375 9.375 0 0 0 15 0M12 21a9.375 9.375 0 0 0 9.375-9.375H2.625A9.375 9.375 0 0 0 12 21Z"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">
+            Desenvolvimento para Personalização
+          </h3>
+          <p class="text-base text-gray-600 leading-relaxed">
+            Criação de componentes e soluções customizadas para personalizar a
+            experiência do seu site com base no comportamento do usuário,
+            aumentando o engajamento e a conversão em seus segmentos mais
+            valiosos.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Services -->
+
+  <!-- The process -->
+  <section class="section pt-14 px-10 row items-center">
+    <div class="container">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Nosso plano de ação em 3 passos simples
+        </h2>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          Elimine a incerteza e veja como é simples começar a transformar seus
+          dados em resultados concretos.
+        </p>
+      </div>
+
+      <div
+        class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3"
+      >
+        <div class="flex flex-col">
+          <div class="flex items-center gap-x-4">
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              >01</span
+            >
+            <h3 class="text-xl font-semibold leading-7 text-gray-900">
+              Diagnóstico e estratégia
+            </h3>
+          </div>
+          <p class="mt-4 flex-auto text-base leading-7 text-gray-600">
+            Tudo começa com uma conversa. Você agenda uma chamada inicial sem
+            compromisso, onde eu mergulho para entender seus desafios, seu
+            público e seus objetivos de negócio. A partir daí, traçamos uma
+            estratégia e formulamos as primeiras hipóteses de alto impacto.
+          </p>
+        </div>
+
+        <div class="flex flex-col">
+          <div class="flex items-center gap-x-4">
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              >02</span
+            >
+            <h3 class="text-xl font-semibold leading-7 text-gray-900">
+              Implementação e testes
+            </h3>
+          </div>
+          <p class="mt-4 flex-auto text-base leading-7 text-gray-600">
+            Com base na estratégia, eu cuido de toda a parte técnica. Desenvolvo
+            e implemento os testes A/B com código limpo e eficiente, garantindo
+            performance máxima e uma coleta de dados 100% precisa, sem que você
+            precise se preocupar com os detalhes.
+          </p>
+        </div>
+
+        <div class="flex flex-col">
+          <div class="flex items-center gap-x-4">
+            <span
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              >03</span
+            >
+            <h3 class="text-xl font-semibold leading-7 text-gray-900">
+              Análise e crescimento
+            </h3>
+          </div>
+          <p class="mt-4 flex-auto text-base leading-7 text-gray-600">
+            Você não fica no escuro. Apresento relatórios claros sobre os
+            resultados dos testes e seus impactos. Juntos, transformamos cada
+            experimento em aprendizado valioso, alimentando um ciclo contínuo de
+            otimização e crescimento para o seu negócio.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /The process -->
+
+  <!-- The lab -->
+  <section class="section pt-14 px-10 row items-center">
+    <div class="container">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Laboratório de CRO: Análises em ação
+        </h2>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          Aqui eu desconstruo interfaces de empresas e apresento análises e hipóteses de otimização. É uma amostra de como aplico meu método na prática.
+        </p>
+      </div>
+
+      <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+        {
+          // Alterado para .slice(0, 3) para pegar os 3 estudos mais recentes
+          recentStudies.map((study) => (
+            // CARD CUSTOMIZADO: a tag <article> foi trocada por <a> para o card inteiro ser clicável
+            <a href={`/lab/${study.id}`} class="flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
+
+              <div class="flex-shrink-0">
+                <img class="h-48 w-full object-cover" src={study.data.image} alt="" />
+              </div>
+
+              <div class="flex flex-1 flex-col justify-between p-6">
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-indigo-600">
+                    {study.data.categories[0]}
+                  </p>
+                  <h3 class="mt-2 text-xl font-semibold text-gray-900">
+                    {study.data.title}
+                  </h3>
+                  <p class="mt-3 text-base text-gray-500 line-clamp-3">
+                    {study.data.description}
+                  </p>
+                </div>
+                <div class="mt-6">
+                  <span class="font-semibold text-indigo-600 hover:text-indigo-500">
+                    Ler análise completa &rarr;
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))
+        }
+      </div>
+
+      <div class="mt-16 text-center">
+        <a href="/blog" class="inline-block rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          Ver todas as análises
+        </a>
+      </div>
+    </div>
+  </section>
+  <!-- /The lab -->
+
+  <!-- FAQ -->
+  <section class="section pt-14 px-10 row items-center">
+    <div class="container">
+      <div class="mx-auto max-w-4xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          Perguntas Frequentes
+        </h2>
+        <p class="mt-4 text-lg leading-8 text-gray-600">
+          Ainda tem dúvidas? Reuni aqui as respostas para as questões mais comuns antes de iniciarmos uma parceria.
+        </p>
+      </div>
+
+      <div class="mx-auto mt-16 max-w-4xl">
+        <dl class="space-y-4">
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                Qual o investimento para contratar seus serviços?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Não trabalho com pacotes de preço fixo, pois cada projeto tem um nível de complexidade e potencial de impacto diferente. Meu modelo é baseado em valor e no escopo do projeto. Após nossa conversa inicial de diagnóstico, eu preparo uma proposta customizada que se alinha aos seus objetivos e ao retorno sobre o investimento (ROI) que podemos gerar juntos.
+            </p>
+          </details>
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                Em quanto tempo consigo ver os primeiros resultados?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Um teste A/B bem executado precisa de tempo para coletar um volume de dados estatisticamente significativo. Geralmente, os primeiros testes podem levar de 2 a 4 semanas para apresentar resultados confiáveis. O objetivo não é a velocidade a qualquer custo, mas sim a certeza de que estamos tomando a decisão correta para o crescimento do seu negócio.
+            </p>
+          </details>
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                Meu site não tem muito tráfego. CRO ainda funciona para mim?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Sim, mas a estratégia é diferente. Em vez de pequenos testes A/B que exigem muito tráfego, focamos em otimizações baseadas em análises qualitativas (mapas de calor, gravações de sessão) e em testes mais radicais (como o redesenho de uma página inteira), que tendem a gerar impactos maiores e mais fáceis de mensurar em cenários de menor tráfego.
+            </p>
+          </details>
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                Você trabalha com qual plataforma ou tecnologia?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Sou tecnicamente agnóstico. Minha expertise está nos fundamentos de front-end (HTML, CSS, JavaScript) e nos princípios de CRO, o que me permite atuar na grande maioria das plataformas e frameworks do mercado, incluindo os mais populares como Shopify, VTEX, Magento, e aplicações customizadas em React, Vue ou Angular.
+            </p>
+          </details>
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                E se um teste A/B não der um resultado positivo?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Esta é uma das melhores coisas que pode acontecer. Um teste "perdedor" ou "inconclusivo" não é um fracasso, é um aprendizado valioso e barato. Ele nos impede de implementar uma mudança baseada em "achismo" que poderia prejudicar sua conversão e receita a longo prazo. Cada teste, independentemente do resultado, nos aproxima do entendimento sobre o que seus clientes realmente querem.
+            </p>
+          </details>
+
+          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+              <h3 class="text-lg font-semibold">
+                Como seu trabalho se integra com minha equipe de marketing?
+              </h3>
+              <span class="relative h-5 w-5 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 leading-relaxed text-gray-700">
+              Eu atuo como um parceiro estratégico e uma extensão da sua equipe. Colaboro diretamente com o time de marketing para entender as hipóteses de negócio e com o time de design para garantir a fidelidade visual, traduzindo tudo em uma implementação técnica impecável. A comunicação é a chave, e meu objetivo é ser uma ponte, não um silo.
+            </p>
+          </details>
+
+        </dl>
+      </div>
+    </div>
+  </section>
+  <!-- /FAQ -->
+
+  <!-- Final CTA -->
+  <section class="section pt-14 px-10 row items-center bg-gray-900">
+    <div class="container">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          Pronto para transformar seus visitantes em clientes?
+        </h2>
+
+        <p class="mt-6 text-lg leading-8 text-gray-300">
+          A otimização de conversão não é sobre truques, é sobre aplicar um
+          processo científico para crescer de forma sustentável. Se você está
+          pronto para tomar decisões baseadas em dados, o primeiro passo é uma
+          conversa.
+        </p>
+
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+          <a
+            href="#"
+            class="rounded-md bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Agende sua Análise Gratuita
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- /Final CTA -->
+
+  <!-- <Testimonial testimonial={testimonial} /> -->
+  <!-- <CallToAction call_to_action={call_to_action} /> -->
 </Base>
