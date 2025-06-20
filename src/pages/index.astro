@@ -2,15 +2,10 @@
 import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
 import { markdownify } from "@/lib/utils/textConverter";
-import CallToAction from "@/partials/CallToAction.astro";
 import type { Button, Feature } from "@/types";
 import type { CollectionEntry } from "astro:content";
 import { getEntry } from "astro:content";
 import { FaCheck } from "react-icons/fa";
-import BlogCard from "@/components/BlogCard.astro";
-import { getSinglePage } from "@/lib/contentParser.astro";
-import { sortByDate } from "@/lib/utils/sortFunctions";
-import config from "@/config/config.json";
 
 interface Homepage {
   banner: {
@@ -36,18 +31,6 @@ const call_to_action = (await getEntry(
   "ctaSection",
   "call-to-action",
 )) as CollectionEntry<"ctaSection">;
-
-const BLOG_FOLDER = "blog";
-
-const postIndex = (await getEntry(
-  BLOG_FOLDER,
-  "-index"
-)) as CollectionEntry<"blog">;
-const posts = await getSinglePage(BLOG_FOLDER);
-const sortedPosts = sortByDate(posts);
-const totalPages: number = Math.ceil(posts.length / config.settings.pagination);
-const currentPosts = sortedPosts.slice(0, config.settings.pagination);
-const recentStudies = sortedPosts.slice(0, 3);
 
 const { banner, features } = homepage.data as Homepage;
 ---
@@ -99,7 +82,7 @@ const { banner, features } = homepage.data as Homepage;
   <!-- Features -->
   {
     features.map((feature, index: number) => (
-      <section class={`section-sm ${index % 2 === 0 && "bg-gradient"} px-10`}>
+      <section class={`section-sm ${index % 2 === 0 && "bg-dark"} px-10`}>
         <div class="container">
           <div class="row items-center justify-between">
             <div
@@ -114,13 +97,15 @@ const { banner, features } = homepage.data as Homepage;
               />
             </div>
             <div class={`md:col-7 lg:col-6 ${index % 2 !== 0 && "md:order-1"}`}>
-              <h2 set:html={markdownify(feature.title)} class="mb-4" />
+              <h2 set:html={markdownify(feature.title)} class={`mb-4 ${markdownify(feature.theme) == "dark" ? 'text-light' : "" }`} />
               <p set:html={markdownify(feature.content)} class="mb-8 text-lg" />
               <ul>
                 {feature.bulletpoints.map((bullet: string) => (
                   <li class="relative mb-4 pl-6">
-                    <FaCheck className={"absolute left-0 top-1.5"} />
-                    <span set:html={markdownify(bullet)} />
+                    <FaCheck
+                      className={"absolute left-0 top-1.5 text-primary"}
+                    />
+                    <span set:html={markdownify(bullet)} class={`${markdownify(feature.theme) == "dark" ? 'text-light' : "" }`} />
                   </li>
                 ))}
               </ul>
@@ -373,19 +358,29 @@ const { banner, features } = homepage.data as Homepage;
           Laboratório de CRO: Análises em ação
         </h2>
         <p class="mt-6 text-lg leading-8 text-gray-600">
-          Aqui eu desconstruo interfaces de empresas e apresento análises e hipóteses de otimização. É uma amostra de como aplico meu método na prática.
+          Aqui eu desconstruo interfaces de empresas e apresento análises e
+          hipóteses de otimização. É uma amostra de como aplico meu método na
+          prática.
         </p>
       </div>
 
-      <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3">
-        {
+      <div
+        class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
+      >
+        <!-- {
           // Alterado para .slice(0, 3) para pegar os 3 estudos mais recentes
           recentStudies.map((study) => (
             // CARD CUSTOMIZADO: a tag <article> foi trocada por <a> para o card inteiro ser clicável
-            <a href={`/lab/${study.id}`} class="flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl">
-
+            <a
+              href={`/lab/${study.id}`}
+              class="flex flex-col overflow-hidden rounded-2xl bg-white shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+            >
               <div class="flex-shrink-0">
-                <img class="h-48 w-full object-cover" src={study.data.image} alt="" />
+                <img
+                  class="h-48 w-full object-cover"
+                  src={study.data.image}
+                  alt=""
+                />
               </div>
 
               <div class="flex flex-1 flex-col justify-between p-6">
@@ -408,11 +403,14 @@ const { banner, features } = homepage.data as Homepage;
               </div>
             </a>
           ))
-        }
+        } -->
       </div>
 
       <div class="mt-16 text-center">
-        <a href="/blog" class="inline-block rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+        <a
+          href="/lab"
+          class="inline-block rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
           Ver todas as análises
         </a>
       </div>
@@ -428,127 +426,300 @@ const { banner, features } = homepage.data as Homepage;
           Perguntas Frequentes
         </h2>
         <p class="mt-4 text-lg leading-8 text-gray-600">
-          Ainda tem dúvidas? Reuni aqui as respostas para as questões mais comuns antes de iniciarmos uma parceria.
+          Ainda tem dúvidas? Reuni aqui as respostas para as questões mais
+          comuns antes de iniciarmos uma parceria.
         </p>
       </div>
 
       <div class="mx-auto mt-16 max-w-4xl">
         <dl class="space-y-4">
-
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 Qual o investimento para contratar seus serviços?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Não trabalho com pacotes de preço fixo, pois cada projeto tem um nível de complexidade e potencial de impacto diferente. Meu modelo é baseado em valor e no escopo do projeto. Após nossa conversa inicial de diagnóstico, eu preparo uma proposta customizada que se alinha aos seus objetivos e ao retorno sobre o investimento (ROI) que podemos gerar juntos.
+              Não trabalho com pacotes de preço fixo, pois cada projeto tem um
+              nível de complexidade e potencial de impacto diferente. Meu modelo
+              é baseado em valor e no escopo do projeto. Após nossa conversa
+              inicial de diagnóstico, eu preparo uma proposta customizada que se
+              alinha aos seus objetivos e ao retorno sobre o investimento (ROI)
+              que podemos gerar juntos.
             </p>
           </details>
 
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 Em quanto tempo consigo ver os primeiros resultados?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Um teste A/B bem executado precisa de tempo para coletar um volume de dados estatisticamente significativo. Geralmente, os primeiros testes podem levar de 2 a 4 semanas para apresentar resultados confiáveis. O objetivo não é a velocidade a qualquer custo, mas sim a certeza de que estamos tomando a decisão correta para o crescimento do seu negócio.
+              Um teste A/B bem executado precisa de tempo para coletar um volume
+              de dados estatisticamente significativo. Geralmente, os primeiros
+              testes podem levar de 2 a 4 semanas para apresentar resultados
+              confiáveis. O objetivo não é a velocidade a qualquer custo, mas
+              sim a certeza de que estamos tomando a decisão correta para o
+              crescimento do seu negócio.
             </p>
           </details>
 
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 Meu site não tem muito tráfego. CRO ainda funciona para mim?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Sim, mas a estratégia é diferente. Em vez de pequenos testes A/B que exigem muito tráfego, focamos em otimizações baseadas em análises qualitativas (mapas de calor, gravações de sessão) e em testes mais radicais (como o redesenho de uma página inteira), que tendem a gerar impactos maiores e mais fáceis de mensurar em cenários de menor tráfego.
+              Sim, mas a estratégia é diferente. Em vez de pequenos testes A/B
+              que exigem muito tráfego, focamos em otimizações baseadas em
+              análises qualitativas (mapas de calor, gravações de sessão) e em
+              testes mais radicais (como o redesenho de uma página inteira), que
+              tendem a gerar impactos maiores e mais fáceis de mensurar em
+              cenários de menor tráfego.
             </p>
           </details>
 
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 Você trabalha com qual plataforma ou tecnologia?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Sou tecnicamente agnóstico. Minha expertise está nos fundamentos de front-end (HTML, CSS, JavaScript) e nos princípios de CRO, o que me permite atuar na grande maioria das plataformas e frameworks do mercado, incluindo os mais populares como Shopify, VTEX, Magento, e aplicações customizadas em React, Vue ou Angular.
+              Sou tecnicamente agnóstico. Minha expertise está nos fundamentos
+              de front-end (HTML, CSS, JavaScript) e nos princípios de CRO, o
+              que me permite atuar na grande maioria das plataformas e
+              frameworks do mercado, incluindo os mais populares como Shopify,
+              VTEX, Magento, e aplicações customizadas em React, Vue ou Angular.
             </p>
           </details>
 
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 E se um teste A/B não der um resultado positivo?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Esta é uma das melhores coisas que pode acontecer. Um teste "perdedor" ou "inconclusivo" não é um fracasso, é um aprendizado valioso e barato. Ele nos impede de implementar uma mudança baseada em "achismo" que poderia prejudicar sua conversão e receita a longo prazo. Cada teste, independentemente do resultado, nos aproxima do entendimento sobre o que seus clientes realmente querem.
+              Esta é uma das melhores coisas que pode acontecer. Um teste
+              "perdedor" ou "inconclusivo" não é um fracasso, é um aprendizado
+              valioso e barato. Ele nos impede de implementar uma mudança
+              baseada em "achismo" que poderia prejudicar sua conversão e
+              receita a longo prazo. Cada teste, independentemente do resultado,
+              nos aproxima do entendimento sobre o que seus clientes realmente
+              querem.
             </p>
           </details>
 
-          <details class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden">
-            <summary class="flex cursor-pointer items-center justify-between gap-4 text-gray-900">
+          <details
+            class="group rounded-lg bg-white p-6 shadow-sm [&_summary::-webkit-details-marker]:hidden"
+          >
+            <summary
+              class="flex cursor-pointer items-center justify-between gap-4 text-gray-900"
+            >
               <h3 class="text-lg font-semibold">
                 Como seu trabalho se integra com minha equipe de marketing?
               </h3>
               <span class="relative h-5 w-5 shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-100 group-open:opacity-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 9v6m3-3H9"></path>
                 </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12H9" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="absolute inset-0 h-5 w-5 opacity-0 group-open:opacity-100"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 12H9"></path>
                 </svg>
               </span>
             </summary>
             <p class="mt-4 leading-relaxed text-gray-700">
-              Eu atuo como um parceiro estratégico e uma extensão da sua equipe. Colaboro diretamente com o time de marketing para entender as hipóteses de negócio e com o time de design para garantir a fidelidade visual, traduzindo tudo em uma implementação técnica impecável. A comunicação é a chave, e meu objetivo é ser uma ponte, não um silo.
+              Eu atuo como um parceiro estratégico e uma extensão da sua equipe.
+              Colaboro diretamente com o time de marketing para entender as
+              hipóteses de negócio e com o time de design para garantir a
+              fidelidade visual, traduzindo tudo em uma implementação técnica
+              impecável. A comunicação é a chave, e meu objetivo é ser uma
+              ponte, não um silo.
             </p>
           </details>
-
         </dl>
       </div>
     </div>

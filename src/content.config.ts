@@ -97,6 +97,7 @@ const homepageCollection = defineCollection({
         image: z.string(),
         content: z.string(),
         bulletpoints: z.array(z.string()),
+        theme: z.string(),
         button: z.object({
           enable: z.boolean(),
           label: z.string(),

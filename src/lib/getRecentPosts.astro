@@ -1,0 +1,11 @@
+---
+import { getSinglePage } from "@/lib/contentParser.astro";
+import { sortByDate } from "@/lib/utils/sortFunctions";
+
+export const recentStudies = await (async () => {
+  const BLOG_FOLDER = "blog";
+  const posts = await getSinglePage(BLOG_FOLDER);
+  const sortedPosts = sortByDate(posts);
+  return sortedPosts.slice(0, 3);
+})();
+---

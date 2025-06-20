@@ -18,6 +18,7 @@ features:
       - "Você investe em tráfego, mas vê a grande maioria dos visitantes abandonar seu site sem converter?"
       - "Sente que seus testes A/B são baseados mais em \"achismo\" do que em dados concretos?"
       - "A implementação técnica dos seus experimentos é lenta, burocrática e cheia de erros que poluem os resultados?"
+    theme: "dark"
     button:
       enable: false
       label: "Get Started Now"
@@ -33,6 +34,7 @@ features:
     "
     bulletpoints:
       - ""
+    theme: "light"
     button:
       enable: false
       label: "Get Started Now"
