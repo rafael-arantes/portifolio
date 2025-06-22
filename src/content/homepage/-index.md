@@ -25,7 +25,7 @@ features:
       link: "#"
 
   - title: "A ponte entre sua estratégia e a tecnologia que gera resultados."
-    image: "/images/service-2.png"
+    image: "/images/IMG_9534-cropped-r.png"
     content: "Se você se identificou com os desafios da seção anterior, saiba que eles não são uma sentença. São um sinal de que existe um enorme potencial de crescimento esperando para ser destravado com a abordagem técnica correta. <br><br>
 
     Desde o início da minha carreira como programador, o que me fascina é usar a lógica para resolver problemas complexos. Rapidamente, percebi que a barreira entre uma boa ideia de marketing e um resultado financeiro real era quase sempre técnica: implementações lentas, dados imprecisos e falta de um especialista que unisse os dois mundos. <br><br>

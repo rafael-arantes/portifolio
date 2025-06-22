@@ -15,12 +15,16 @@
   ],
   "footer": [
     {
-      "name": "Elements",
-      "url": "/elements"
+      "name": "Início",
+      "url": "/"
     },
     {
-      "name": "Privacy Policy",
-      "url": "/privacy-policy"
+      "name": "Sobre",
+      "url": "/about"
+    },
+    {
+      "name": "Laboratório de CRO",
+      "url": "/lab"
     }
   ]
 }

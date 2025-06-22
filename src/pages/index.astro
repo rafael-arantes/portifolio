@@ -1,6 +1,7 @@
 ---
 import ImageMod from "@/components/ImageMod.astro";
 import Base from "@/layouts/Base.astro";
+import { recentStudies } from "@/lib/getRecentPosts.astro";
 import { markdownify } from "@/lib/utils/textConverter";
 import type { Button, Feature } from "@/types";
 import type { CollectionEntry } from "astro:content";
@@ -22,15 +23,15 @@ const homepage = (await getEntry(
   "-index",
 )) as CollectionEntry<"homepage">;
 
-const testimonial = (await getEntry(
-  "testimonialSection",
-  "testimonial",
-)) as CollectionEntry<"testimonialSection">;
+// const testimonial = (await getEntry(
+//   "testimonialSection",
+//   "testimonial",
+// )) as CollectionEntry<"testimonialSection">;
 
-const call_to_action = (await getEntry(
-  "ctaSection",
-  "call-to-action",
-)) as CollectionEntry<"ctaSection">;
+// const call_to_action = (await getEntry(
+//   "ctaSection",
+//   "call-to-action",
+// )) as CollectionEntry<"ctaSection">;
 
 const { banner, features } = homepage.data as Homepage;
 ---
@@ -97,7 +98,10 @@ const { banner, features } = homepage.data as Homepage;
               />
             </div>
             <div class={`md:col-7 lg:col-6 ${index % 2 !== 0 && "md:order-1"}`}>
-              <h2 set:html={markdownify(feature.title)} class={`mb-4 ${markdownify(feature.theme) == "dark" ? 'text-light' : "" }`} />
+              <h2
+                set:html={markdownify(feature.title)}
+                class={`mb-4 ${markdownify(feature.theme) == "dark" ? "text-light" : ""}`}
+              />
               <p set:html={markdownify(feature.content)} class="mb-8 text-lg" />
               <ul>
                 {feature.bulletpoints.map((bullet: string) => (
@@ -105,7 +109,10 @@ const { banner, features } = homepage.data as Homepage;
                     <FaCheck
                       className={"absolute left-0 top-1.5 text-primary"}
                     />
-                    <span set:html={markdownify(bullet)} class={`${markdownify(feature.theme) == "dark" ? 'text-light' : "" }`} />
+                    <span
+                      set:html={markdownify(bullet)}
+                      class={`${markdownify(feature.theme) == "dark" ? "text-light" : ""}`}
+                    />
                   </li>
                 ))}
               </ul>
@@ -123,10 +130,10 @@ const { banner, features } = homepage.data as Homepage;
   <!-- /Features -->
 
   <!-- Services -->
-  <section class="section pt-14 px-10 row items-center">
+  <section class="section pt-14 bg-dark px-10 row items-center">
     <div class="container">
       <div class="text-center">
-        <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+        <h2 class="text-3xl font-extrabold text-light sm:text-4xl">
           Meus Serviços de CRO:
         </h2>
       </div>
@@ -295,7 +302,7 @@ const { banner, features } = homepage.data as Homepage;
         <div class="flex flex-col">
           <div class="flex items-center gap-x-4">
             <span
-              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-primary"
               >01</span
             >
             <h3 class="text-xl font-semibold leading-7 text-gray-900">
@@ -313,7 +320,7 @@ const { banner, features } = homepage.data as Homepage;
         <div class="flex flex-col">
           <div class="flex items-center gap-x-4">
             <span
-              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-primary"
               >02</span
             >
             <h3 class="text-xl font-semibold leading-7 text-gray-900">
@@ -331,7 +338,7 @@ const { banner, features } = homepage.data as Homepage;
         <div class="flex flex-col">
           <div class="flex items-center gap-x-4">
             <span
-              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-indigo-600"
+              class="flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 font-bold text-primary"
               >03</span
             >
             <h3 class="text-xl font-semibold leading-7 text-gray-900">
@@ -351,13 +358,13 @@ const { banner, features } = homepage.data as Homepage;
   <!-- /The process -->
 
   <!-- The lab -->
-  <section class="section pt-14 px-10 row items-center">
+  <section class="section pt-14 px-10 bg-dark row items-center">
     <div class="container">
       <div class="mx-auto max-w-2xl text-center">
-        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h2 class="text-3xl font-bold tracking-tight text-light sm:text-4xl">
           Laboratório de CRO: Análises em ação
         </h2>
-        <p class="mt-6 text-lg leading-8 text-gray-600">
+        <p class="mt-6 text-lg leading-8 text-light">
           Aqui eu desconstruo interfaces de empresas e apresento análises e
           hipóteses de otimização. É uma amostra de como aplico meu método na
           prática.
@@ -367,7 +374,7 @@ const { banner, features } = homepage.data as Homepage;
       <div
         class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3"
       >
-        <!-- {
+        {
           // Alterado para .slice(0, 3) para pegar os 3 estudos mais recentes
           recentStudies.map((study) => (
             // CARD CUSTOMIZADO: a tag <article> foi trocada por <a> para o card inteiro ser clicável
@@ -403,13 +410,13 @@ const { banner, features } = homepage.data as Homepage;
               </div>
             </a>
           ))
-        } -->
+        }
       </div>
 
       <div class="mt-16 text-center">
         <a
           href="/lab"
-          class="inline-block rounded-md bg-indigo-600 px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          class="inline-block rounded-md bg-primary px-6 py-3 text-base font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         >
           Ver todas as análises
         </a>
@@ -727,7 +734,7 @@ const { banner, features } = homepage.data as Homepage;
   <!-- /FAQ -->
 
   <!-- Final CTA -->
-  <section class="section pt-14 px-10 row items-center bg-gray-900">
+  <section class="section pt-14 px-10 row items-center bg-dark">
     <div class="container">
       <div class="mx-auto max-w-2xl text-center">
         <h2 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
@@ -744,16 +751,13 @@ const { banner, features } = homepage.data as Homepage;
         <div class="mt-10 flex items-center justify-center gap-x-6">
           <a
             href="#"
-            class="rounded-md bg-indigo-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            class="rounded-md bg-primary px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-primary-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
-            Agende sua Análise Gratuita
+            Agende sua análise gratuita
           </a>
         </div>
       </div>
     </div>
   </section>
   <!-- /Final CTA -->
-
-  <!-- <Testimonial testimonial={testimonial} /> -->
-  <!-- <CallToAction call_to_action={call_to_action} /> -->
 </Base>

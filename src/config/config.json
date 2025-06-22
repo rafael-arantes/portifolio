@@ -7,6 +7,7 @@
     "favicon": "/images/favicon.png",
     "logo": "/images/logo-ra.png",
     "logo_darkmode": "/images/logo-darkmode.png",
+    "logo_footer": "/images/logo-footer.png",
     "logo_width": "210",
     "logo_height": "22",
     "logo_text": "Rafael Arantes"
@@ -24,7 +25,7 @@
 
   "params": {
     "contact_form_action": "#",
-    "copyright": "Designed And Developed by [Zeon Studio](https://zeon.studio)"
+    "copyright": "Desenvolvido por Rafael Arantes"
   },
 
   "navigation_button": {
